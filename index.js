@@ -40,7 +40,7 @@ const createCat2 = () => {
 const updateCat = () => {
     //updateContent(direction); De momento no la uso.
     //Cuando cree la función de saltar, entiendo que irá aquí(?)
-    //clearCanvas();
+    clearCanvas();
     createBackground();
     createCat1();
     //clearCanvas();
