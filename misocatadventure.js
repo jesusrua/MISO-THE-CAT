@@ -9,23 +9,13 @@ window.onload = () => {
 
     //COOKIES
 
-    //IMAGEN COOKIES
-
-    const cookiesImg = new Image()
-    cookiesImg.src = "/Images/FISH COOKIE/cookie.png"
-
-    const drawCookie = ()=>{
-        ctx.drawImage(cookiesImg, 0, 0, 25, 25)
-    }
-
     class Obstacle {
-        constructor(_x, _y, _width, _image) {
+        constructor(_x, _y, _width) {
             this.x = _x
             this.y = _y
             this.width = _width
-            this.image = _image
         }
-    }
+    };
 
     //Obstáculo malo  
 
@@ -35,11 +25,24 @@ window.onload = () => {
             this.y = _y
             this.width = _width
         }
-    }
+    };
 
     //Obstáculo malo 2
 
-    
+    const renderCucumber = ()=> {
+        const cucumber = new Image()
+        cucumber.src = "/Images/CUCUMBER/pepino ok.png"
+        drawCucumber(cucumber)
+    }
+
+    const drawCucumber = (_cucumber) => {
+        _cucumber.onload = ()=> {
+        ctx.drawImage(_cucumber, 0, 0, 25, 25)
+        }
+    }
+
+   const badObstacles = [renderCucumber]
+
 
 
     //VARIABLES_________________________________________________________________________________
@@ -59,6 +62,7 @@ window.onload = () => {
     let endGame = false;
     let victory = false;
     let dateRightNow = Date.now()
+    let dateRightNow2 = Date.now()
     const obstacles = []
     const obstacles2 = []
 
@@ -146,14 +150,19 @@ window.onload = () => {
 
         if (Date.now() - dateRightNow >= 1000) {
             dateRightNow = Date.now()
-            const newObstacle = new Obstacle(500, 124, 25, drawCookie())
+            const newObstacle = new Obstacle(500, 124, 50)
             obstacles.push(newObstacle)
         }
     }
 
+
+    const cookieImage = new Image()
+    cookieImage.src = "/Images/FISH COOKIE/cookie.png"
+
+
     const drawObstacles = () => {
         obstacles.forEach((obstacle) => {
-            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, 25)
+            ctx.drawImage(cookieImage, obstacle.x, obstacle.y, obstacle.width, 50)
         })
 
     }
@@ -168,8 +177,8 @@ window.onload = () => {
     //CREACIÓN OBSTÁCULOS MALOS
 
     const createObstacle2 = () => {
-        if (Date.now() - dateRightNow >= 1300) {
-            dateRightNow = Date.now()
+        if (Date.now() - dateRightNow2 >= 1300) {
+            dateRightNow2 = Date.now()
             const newObstacle2 = new Obstacle2(500, 255, 25)
             obstacles2.push(newObstacle2)
         }
@@ -190,31 +199,18 @@ window.onload = () => {
 
 
     //COMPROBAR COLISIÓN CON COOKIES
-    //FUNCIONA PERO DETECTA DEMASIADAS COLISIONES POR IMPACTO
+
     const checkCollision = () => {
-        obstacles.forEach((obstacle) => {
+        obstacles.forEach((obstacle, index) => {
             if (catX <= obstacle.x + obstacle.width &&
                 catX + 50 > obstacle.x &&
                 catY <= obstacle.y + 25 &&
                 50 + catY >= obstacle.y) {
-                return lifes++
+                lifes++
+                obstacles.splice(index, 1)
             }
         })
     }
-
-    //TAMBIEN FUNCIONA PERO DETECTA DEMASIADAS COLISIONES POR IMPACTO
-    /*const checkCollision = ()=>{
-         obstacles.forEach((obstacle)=>{
-             if (catY <= 149) {
-             if(catX >= obstacle.x && catX <= (obstacle.x + obstacle.width)){
-               console.log("COLISION")
-             } else if((catX + 50) >= obstacle.x && (catX+ 50) <= (obstacle.x + obstacle.width)){
-                 console.log("COLISION")
-             } else {
-               //score++
-             }
-         }})
-       }*/
 
     //COMPROBAR Y DIBUJAR FIN DEL JUEGO
 
