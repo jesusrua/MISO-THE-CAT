@@ -9,11 +9,21 @@ window.onload = () => {
 
     //COOKIES
 
+    //IMAGEN COOKIES
+
+    const cookiesImg = new Image()
+    cookiesImg.src = "/Images/FISH COOKIE/cookie.png"
+
+    const drawCookie = ()=>{
+        ctx.drawImage(cookiesImg, 0, 0, 25, 25)
+    }
+
     class Obstacle {
-        constructor(_x, _y, _width) {
+        constructor(_x, _y, _width, _image) {
             this.x = _x
             this.y = _y
             this.width = _width
+            this.image = _image
         }
     }
 
@@ -27,24 +37,27 @@ window.onload = () => {
         }
     }
 
+    //Obstáculo malo 2
+
+    
 
 
     //VARIABLES_________________________________________________________________________________
 
     //Gato
-    let life = 7;
+    let lifes = 7;
     let lifeUp = false;
     let catVelocityY = 5;
     //let catGravityY = 0;
     let catY = 240;
     let catX = 220;
-    ctx.fillStyle = "green"
+    //ctx.fillStyle = "green"
 
     //Cookies
-    //let cookieX = 400;
 
     //Otras
     let endGame = false;
+    let victory = false;
     let dateRightNow = Date.now()
     const obstacles = []
     const obstacles2 = []
@@ -97,6 +110,14 @@ window.onload = () => {
         }
     }
 
+    //CREAR TEXTO VIDAS
+
+    const renderLifes = () => {
+        ctx.font = '20px sans-serif'
+        ctx.fillStyle = 'white'
+        ctx.fillText(`LIFES: ${lifes}`, 10, 30)
+    }
+
     //SALTO DEL GATO
 
     const jump = () => {
@@ -125,7 +146,7 @@ window.onload = () => {
 
         if (Date.now() - dateRightNow >= 1000) {
             dateRightNow = Date.now()
-            const newObstacle = new Obstacle(500, 124, 25)
+            const newObstacle = new Obstacle(500, 124, 25, drawCookie())
             obstacles.push(newObstacle)
         }
     }
@@ -170,49 +191,89 @@ window.onload = () => {
 
     //COMPROBAR COLISIÓN CON COOKIES
     //FUNCIONA PERO DETECTA DEMASIADAS COLISIONES POR IMPACTO
-    const checkCollision = ()=> {
-        obstacles.forEach((obstacle)=>{
-           if (catX <= obstacle.x + obstacle.width &&
-               catX + 50 > obstacle.x &&
-               catY <= obstacle.y + 25 &&
-               50 + catY >= obstacle.y) {
-               console.log("COLISION")
-            } 
+    const checkCollision = () => {
+        obstacles.forEach((obstacle) => {
+            if (catX <= obstacle.x + obstacle.width &&
+                catX + 50 > obstacle.x &&
+                catY <= obstacle.y + 25 &&
+                50 + catY >= obstacle.y) {
+                return lifes++
+            }
         })
     }
 
     //TAMBIEN FUNCIONA PERO DETECTA DEMASIADAS COLISIONES POR IMPACTO
-   /*const checkCollision = ()=>{
-        obstacles.forEach((obstacle)=>{
-            if (catY <= 149) {
-            if(catX >= obstacle.x && catX <= (obstacle.x + obstacle.width)){
-              console.log("COLISION")
-            } else if((catX + 50) >= obstacle.x && (catX+ 50) <= (obstacle.x + obstacle.width)){
-                console.log("COLISION")
-            } else {
-              //score++
-            }
-        }})
-      }*/
+    /*const checkCollision = ()=>{
+         obstacles.forEach((obstacle)=>{
+             if (catY <= 149) {
+             if(catX >= obstacle.x && catX <= (obstacle.x + obstacle.width)){
+               console.log("COLISION")
+             } else if((catX + 50) >= obstacle.x && (catX+ 50) <= (obstacle.x + obstacle.width)){
+                 console.log("COLISION")
+             } else {
+               //score++
+             }
+         }})
+       }*/
+
+    //COMPROBAR Y DIBUJAR FIN DEL JUEGO
+
+    /*const checkEndGame = () => {
+        if (lifes <= 0 || "timer is over") {
+            return endGame = true
+        }
+    };*/
+
+    const renderGameOverText = () => {
+        ctx.font = '50px sans-serif'
+        ctx.textAlign = 'center'
+        ctx.fillText('GAME OVER', 250, 175)
+    };
+
+    //COMPROBAR Y DIBUJAR VICTORIA
+
+    const checkVictory = () => {
+        if (lifes >= 20) {
+            return victory = true;
+        }
+    };
+
+    const renderVictoryText = () => {
+        ctx.font = "50px sans-serif"
+        ctx.textAlign = "center"
+        ctx.fillText("YOU WIN!", 250, 175)
+    };
+
 
 
 
     //START GAME FUNCIÓN
     startGame = () => {
-        renderBackground()
-        renderCat()
+        if (!endGame && !victory) {
+            renderBackground()
+            renderCat()
+            renderLifes()
 
-        createObstacle()
-        drawObstacles()
-        updateObstacles()
+            createObstacle()
+            drawObstacles()
+            updateObstacles()
 
-        createObstacle2()
-        drawObstacles2()
-        updateObstacles2()
+            createObstacle2()
+            drawObstacles2()
+            updateObstacles2()
 
-        checkCollision()
+            checkCollision()
+            //checkEndGame()
+            checkVictory()
 
-        requestAnimationFrame(startGame)
+            requestAnimationFrame(startGame)
+
+        } else if (victory) {
+            renderVictoryText()
+            renderLifes()
+        }
+
+
     }
 
 };
