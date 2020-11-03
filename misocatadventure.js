@@ -1,129 +1,218 @@
-//CREACIÓN AREA DE JUEGO
+window.onload = () => {
 
-const myGameArea = {
-    canvas: document.createElement('canvas'),
-    frames: 0,
-    start: function () {
-        this.canvas.width = 500;
-        this.canvas.height = 350;
-        this.context = this.canvas.getContext('2d');
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.interval = setInterval(updateGameArea, 20);
-    },
-    clear: function () {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    },
-    stop: function () {
-        clearInterval(this.interval);
-    },
+    //CREACIÓN DE CANVAS________________________________________________________________________
+
+    const canvas = document.getElementById("canvas")
+    const ctx = canvas.getContext("2d")
+
+    //CLASSES___________________________________________________________________________________
+
+    //COOKIES
+
+    class Obstacle {
+        constructor(_x, _y, _width) {
+            this.x = _x
+            this.y = _y
+            this.width = _width
+        }
+    }
+
+    //Obstáculo malo  
+
+    class Obstacle2 {
+        constructor(_x, _y, _width) {
+            this.x = _x
+            this.y = _y
+            this.width = _width
+        }
+    }
+
+
+
+    //VARIABLES_________________________________________________________________________________
+
+    //Gato
+    let life = 7;
+    let lifeUp = false;
+    let catVelocityY = 5;
+    //let catGravityY = 0;
+    let catY = 240;
+    let catX = 220;
+    ctx.fillStyle = "green"
+
+    //Cookies
+    //let cookieX = 400;
+
+    //Otras
+    let endGame = false;
+    let dateRightNow = Date.now()
+    const obstacles = []
+    const obstacles2 = []
+
+    //Para "colisiones"
+    const catPosition = [catX, catY]
+
+
+    //DOM MANIPULATION__________________________________________________________________________
+
+    //Botón Start Game
+    document.getElementById("start-game").onclick = (event) => {
+        startGame()
+    }
+
+    //Botón espacio
+    document.addEventListener("keydown", (event) => {
+        if (event.code === "ArrowUp") {
+            jump()
+        }
+    })
+
+
+    //FUNCIONES_________________________________________________________________________________
+
+    //CREAR IMÁGENES
+    const renderBackground = () => {
+        const background = new Image()
+        background.src = "/Images/BACKGROUND/background1.png"
+        drawBackground(background)
+    }
+
+    const renderCat = () => {
+        const cat = new Image()
+        cat.src = "/Images/CATS/tile009.png"
+        drawCat(cat)
+    }
+
+    //DIBUJAR IMÁGENES
+
+    const drawBackground = (_background) => {
+        _background.onload = () => {
+            ctx.drawImage(_background, 0, 0, 500, 350)
+        }
+    }
+
+    const drawCat = (_cat) => {
+        _cat.onload = () => {
+            ctx.drawImage(_cat, catX, catY, 50, 50)
+        }
+    }
+
+    //SALTO DEL GATO
+
+    const jump = () => {
+        let timerUp = setInterval(() => {
+            if (catY <= 149) {
+                clearInterval(timerUp)
+                let timerDown = setInterval(() => {
+                    if (catY >= 240) {
+                        clearInterval(timerDown)
+                    }
+                    catY += catVelocityY
+                }, 20)
+            }
+            catY -= catVelocityY
+        }, 20)
+    }
+
+    //CREACIÓN DE COOKIES
+
+    //¿Usar esto para que salgan a distinta distancia?
+    const getRandomTimeforCookies = () => {
+        return Math.floor(Math.random() * 5000) + 2000
+    }
+
+    const createObstacle = () => {
+
+        if (Date.now() - dateRightNow >= 1000) {
+            dateRightNow = Date.now()
+            const newObstacle = new Obstacle(500, 124, 25)
+            obstacles.push(newObstacle)
+        }
+    }
+
+    const drawObstacles = () => {
+        obstacles.forEach((obstacle) => {
+            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, 25)
+        })
+
+    }
+
+    const updateObstacles = () => {
+
+        obstacles.forEach((obstacle) => {
+            obstacle.x -= 4
+        })
+    }
+
+    //CREACIÓN OBSTÁCULOS MALOS
+
+    const createObstacle2 = () => {
+        if (Date.now() - dateRightNow >= 1300) {
+            dateRightNow = Date.now()
+            const newObstacle2 = new Obstacle2(500, 255, 25)
+            obstacles2.push(newObstacle2)
+        }
+    }
+
+    const drawObstacles2 = () => {
+        obstacles2.forEach((obstacle) => {
+            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, 25)
+        })
+
+    }
+
+    const updateObstacles2 = () => {
+        obstacles2.forEach((obstacle) => {
+            obstacle.x -= 4
+        })
+    }
+
+
+    //COMPROBAR COLISIÓN CON COOKIES
+    //FUNCIONA PERO DETECTA DEMASIADAS COLISIONES POR IMPACTO
+    const checkCollision = ()=> {
+        obstacles.forEach((obstacle)=>{
+           if (catX <= obstacle.x + obstacle.width &&
+               catX + 50 > obstacle.x &&
+               catY <= obstacle.y + 25 &&
+               50 + catY >= obstacle.y) {
+               console.log("COLISION")
+            } 
+        })
+    }
+
+    //TAMBIEN FUNCIONA PERO DETECTA DEMASIADAS COLISIONES POR IMPACTO
+   /*const checkCollision = ()=>{
+        obstacles.forEach((obstacle)=>{
+            if (catY <= 149) {
+            if(catX >= obstacle.x && catX <= (obstacle.x + obstacle.width)){
+              console.log("COLISION")
+            } else if((catX + 50) >= obstacle.x && (catX+ 50) <= (obstacle.x + obstacle.width)){
+                console.log("COLISION")
+            } else {
+              //score++
+            }
+        }})
+      }*/
+
+
+
+    //START GAME FUNCIÓN
+    startGame = () => {
+        renderBackground()
+        renderCat()
+
+        createObstacle()
+        drawObstacles()
+        updateObstacles()
+
+        createObstacle2()
+        drawObstacles2()
+        updateObstacles2()
+
+        checkCollision()
+
+        requestAnimationFrame(startGame)
+    }
+
 };
-
-//CREACIÓN COMPONENTE PARA JUGADOR Y OBSTÁCULOS
-class Component {
-    constructor(width, height, color, x, y) {
-        this.width = width;
-        this.height = height;
-        this.color = color;
-        this.x = x;
-        this.y = y;
-        this.speedY = 0;
-    }
-
-    update() {
-        const ctx = myGameArea.context;
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
-
-    newPos() {
-        if (this.y < 170) {
-            this.speedY = 2;
-        }
-        this.y += this.speedY;
-        if (this.speedY === 2 && this.y === 250) {
-            this.speedY = 0;
-        }
-    }
-
-    jump() {
-        this.speedY = -2;
-    }
-
-    left () {
-        return this.x;
-    }
-
-    right() {
-        this.x + this.width;
-    }
-
-    top() {
-        return this.y;
-    }
-
-    bottom() {
-        return this.y + this.height;
-    }
-    //NO FUNCIONA ESTA MIERDA
-    /*crashWith(obstacle) {
-        return !(this.bottom() >= obstacle.top() && this.right() <= obstacle.left())
-    }*/
-
-}
-
-//CREACIÓN DEL JUGADOR
-const player = new Component(40, 40, 'red', 230, 250);
-
-//FUNCIÓN BOTÓN SALTO (ESPACIO)
-
-document.addEventListener("keydown", (e) => {
-    if (e.keyCode === 32) {
-        player.jump()
-    }
-})
-
-//FUNCION CHEQUEAR FINAL DEL JUEGO
-
-function checkGameOver() {
-    const crashed = myObstacles.some(function (obstacle) {
-        return player.crashWith(obstacle);
-    });
-
-    if (crashed) {
-        myGameArea.stop()
-    }
-}
-
-//CREACIÓN DE LA VARIABLE QUE ALMACENARÁ LOS OBSTÁCULOS
-const myObstacles = []
-
-//CREACIÓN DE LA FUNCIÓN PARA CREAR LOS OBSTÁCULOS
-function updateObstacles() {
-    for (i = 0; i < myObstacles.length; i++) {
-        myObstacles[i].x += -1;
-        myObstacles[i].update()
-    }
-
-    myGameArea.frames += 1;
-    if (myGameArea.frames % 120 === 0) {
-        let x = myGameArea.canvas.width;
-        minGap = 100
-        maxGap = 300
-        let gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-        /*myObstacles.push(new Component(width, height, color, x, y))*/
-        myObstacles.push(new Component(40, 40, "green", x + gap, 250))
-    }
-}
-
-//CREACIÓN UPDATE GAMEAREA
-
-function updateGameArea() {
-    myGameArea.clear();
-    player.newPos();
-    player.update();
-    updateObstacles();
-    checkGameOver();
-
-}
-
-myGameArea.start();

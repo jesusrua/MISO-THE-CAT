@@ -9,18 +9,19 @@ window.onload = () => {
 
     //COOKIES
 
-    //class fishCookies {
-    //     constructor() {
-    //     }
-    //}
-
-    class fishCookies {
+    class Obstacle {
         constructor(_x, _y, _width) {
             this.x = _x
             this.y = _y
             this.width = _width
         }
     }
+
+    //class fishCookies {
+    //     constructor() {
+    //     }
+    //}
+
 
     /*class fishCookies {
         constructor(_x, _y, _height, _width, _color) {
@@ -45,9 +46,11 @@ window.onload = () => {
 
     //Gato
     let life = 7;
-    let catVelocityY = 3;
+    let catVelocityY = 5;
     //let catGravityY = 0;
     let catY = 240;
+    let catX = 220;
+    ctx.fillStyle = "green"
 
     //Cookies
     //let cookieX = 400;
@@ -55,7 +58,10 @@ window.onload = () => {
     //Otras
     let endGame = false;
     let dateRightNow = Date.now()
-    const cookies = []
+    const obstacles = []
+
+    //Para "colisiones"
+    const catPosition = [catX, catY]
 
 
     //DOM MANIPULATION__________________________________________________________________________
@@ -98,7 +104,7 @@ window.onload = () => {
 
     const drawCat = (_cat) => {
         _cat.onload = () => {
-            ctx.drawImage(_cat, 220, catY, 50, 50)
+            ctx.drawImage(_cat, catX, catY, 50, 50)
         }
     }
 
@@ -106,7 +112,7 @@ window.onload = () => {
 
     const jump = () => {
         let timerUp = setInterval(() => {
-            if (catY < 150) {
+            if (catY < 149) {
                 clearInterval(timerUp)
                 let timerDown = setInterval(() => {
                     if (catY >= 240) {
@@ -126,38 +132,92 @@ window.onload = () => {
         return Math.floor(Math.random() * 5000) + 2000
     }
 
-    const createCookies = () => {
+
+    const createObstacle = () => {
+
         if (Date.now() - dateRightNow >= 1000) {
             dateRightNow = Date.now()
-            const newCookie = new fishCookies(500, 150, 50)
-            cookies.push(newCookie)
+            const newObstacle = new Obstacle(500, 150, 25)
+            obstacles.push(newObstacle)
         }
     }
 
-    const drawCookies = () => {
-        cookies.forEach((cookie) => {
-            ctx.fillRect(cookie.x, cookie.y, cookie.width, 50)
+    const drawObstacles = () => {
+        obstacles.forEach((obstacle) => {
+            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, 25)
+        })
+
+    }
+
+    const updateObstacles = () => {
+
+        obstacles.forEach((obstacle) => {
+            obstacle.x -= 4
         })
     }
 
-    const updateCookies = () => {
-        cookies.forEach((cookie) => {
-            cookie.x += -3
+    //COMPROBAR COLISIÓN
+    /*const checkForCollision = ()=>{
+        obstacles.forEach((obstacle)=>{
+    
+          if(obstacle.y === 579){
+    
+            if(_carX >= obstacle.x && _carX <= (obstacle.x + obstacle.width)){
+              endGame = true
+            } else if((_carX + 50) >= obstacle.x && (_carX + 50) <= (obstacle.x + obstacle.width)){
+              endGame = true
+            } else {
+              score++
+            }
+    
+          }
+    
         })
-    }
+      }*/
 
 
+    //POR QUÉ ESTA NO FUNCIONA??
+    //POR QUÉ ESTA NO FUNCIONA??
+    const checkCollision = ()=> {
+         obstacles.forEach((obstacle)=>{
+            if (catX < obstacle.x + obstacle.width &&
+                catX + 50 > obstacle.x &&
+                catY < obstacle.y + obstacle.height &&
+                50 + catY > obstacle.y) {
+                console.log("COLISION")
+             }
+         })
+     }
+
+    /*const checkCollision = () => {
+        obstacles.forEach((obstacle) => {
+            if (obstacle.y  === catY ) {
+                return console.log("COLISION")
+            }
+        })
+    }*/
+
+    //ESTA FUNCIONA CON CONSOLELOG PERO NO SUMANDO VIDAS
+   /* const checkCollision = ()=>{
+        obstacles.forEach((obstacle)=>{
+            if(obstacle.y && obstacle.x === catY && catX) {
+                //return life ++
+                console.log("LIFE UP!")
+                
+            }
+        })
+    }*/
 
     //START GAME FUNCIÓN
     startGame = () => {
         renderBackground()
         renderCat()
 
-        createCookies()
-        drawCookies()
-        updateCookies()
-       
+        createObstacle()         
+        drawObstacles()
+        updateObstacles()
 
+        //checkCollision()
         requestAnimationFrame(startGame)
     }
 
