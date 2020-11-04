@@ -27,24 +27,6 @@ window.onload = () => {
         }
     };
 
-    //Obstáculo malo 2
-
-    const renderCucumber = ()=> {
-        const cucumber = new Image()
-        cucumber.src = "/Images/CUCUMBER/pepino ok.png"
-        drawCucumber(cucumber)
-    }
-
-    const drawCucumber = (_cucumber) => {
-        _cucumber.onload = ()=> {
-        ctx.drawImage(_cucumber, 0, 0, 25, 25)
-        }
-    }
-
-   const badObstacles = [renderCucumber]
-
-
-
     //VARIABLES_________________________________________________________________________________
 
     //Gato
@@ -179,17 +161,59 @@ window.onload = () => {
     const createObstacle2 = () => {
         if (Date.now() - dateRightNow2 >= 1300) {
             dateRightNow2 = Date.now()
-            const newObstacle2 = new Obstacle2(500, 255, 25)
+            const newObstacle2 = new Obstacle2(500, 255, 35)
             obstacles2.push(newObstacle2)
         }
     }
 
+    const cucumberImage = new Image()
+    cucumberImage.src = "/Images/CUCUMBER/pepino ok.png"
+
+    const waterImage = new Image()
+    waterImage.src = "/Images/WATER DROP/water-splash.png"
+
+    const dogImage = new Image()
+    dogImage.src = "/Images/DOGS/DOG OK.png"
+
     const drawObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
-            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, 25)
+            ctx.drawImage(waterImage, obstacle.x, obstacle.y, obstacle.width, 35)
         })
 
     }
+
+
+    /*const badObstaclesImages = [cucumberImage, waterImage, dogImage]
+
+   const drawObstacles2 = () => {
+        obstacles2.forEach((obstacle) => {
+
+            const cucumberImage = new Image()
+            cucumberImage.src = "/Images/CUCUMBER/pepino ok.png"
+
+            const waterImage = new Image()
+            waterImage.src = "/Images/WATER DROP/water-splash.png"
+
+            const dogImage = new Image()
+            dogImage.src = "/Images/DOGS/DOG OK.png"
+
+            const badObstaclesImages = [cucumberImage, waterImage, dogImage]
+
+            const randomImages = (min, max)=> {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+            ctx.drawImage(badObstacles[randomImages(0, 3)], obstacle.x, obstacle.y, obstacle.width, 25)
+        })
+    }*/
+
+
+    //ESTO FUNCIONA
+    /*const drawObstacles2 = () => {
+        obstacles2.forEach((obstacle) => {
+            ctx.drawImage(cucumberImage, obstacle.x, obstacle.y, obstacle.width, 25)
+        })
+    }*/
 
     const updateObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
@@ -200,7 +224,7 @@ window.onload = () => {
 
     //COMPROBAR COLISIÓN CON COOKIES
 
-    const checkCollision = () => {
+    const checkCookieCollision = () => {
         obstacles.forEach((obstacle, index) => {
             if (catX <= obstacle.x + obstacle.width &&
                 catX + 50 > obstacle.x &&
@@ -212,13 +236,27 @@ window.onload = () => {
         })
     }
 
+    //COMPROBAR COLISIÓN CON OBSTACLE MALOS
+
+    const checkBadCollision = () => {
+        obstacles2.forEach((obstacle, index) => {
+            if (catX <= obstacle.x + obstacle.width &&
+                catX + 50 > obstacle.x &&
+                catY <= obstacle.y + 25 &&
+                50 + catY >= obstacle.y) {
+                lifes--
+                obstacles2.splice(index, 1)
+            }
+        })
+    }
+
     //COMPROBAR Y DIBUJAR FIN DEL JUEGO
 
-    /*const checkEndGame = () => {
-        if (lifes <= 0 || "timer is over") {
+    const checkEndGame = () => {
+        if (lifes <= 0 ) {
             return endGame = true
         }
-    };*/
+    };
 
     const renderGameOverText = () => {
         ctx.font = '50px sans-serif'
@@ -258,8 +296,9 @@ window.onload = () => {
             drawObstacles2()
             updateObstacles2()
 
-            checkCollision()
-            //checkEndGame()
+            checkCookieCollision()
+            checkBadCollision()
+            checkEndGame()
             checkVictory()
 
             requestAnimationFrame(startGame)
@@ -267,6 +306,8 @@ window.onload = () => {
         } else if (victory) {
             renderVictoryText()
             renderLifes()
+        } else if (endGame) {
+            renderGameOverText()
         }
 
 
