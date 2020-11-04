@@ -62,6 +62,7 @@ window.onload = () => {
             //timeLeft = 20;
             obstacles.length = 0;
             obstacles2.length = 0;
+            countDown()
             startGame()
         }
     }
@@ -122,7 +123,7 @@ window.onload = () => {
     //SALTO DEL GATO
 
     const jump = () => {
-        let timerUp = setInterval(() => {
+        if (catY = 240) {let timerUp = setInterval(() => {
             if (catY <= 149) {
                 clearInterval(timerUp)
                 let timerDown = setInterval(() => {
@@ -133,7 +134,7 @@ window.onload = () => {
                 }, 20)
             }
             catY -= catVelocityY
-        }, 20)
+        }, 20)} 
     }
 
     //CREACIÓN DE FISH COOKIES
@@ -181,13 +182,13 @@ window.onload = () => {
     }
 
     const cucumberImage = new Image()
-    cucumberImage.src = "./Images/CUCUMBER/pepino ok.png"
+    cucumberImage.src = "./Images/CUCUMBER/pepino-ok.png"
 
     const waterImage = new Image()
     waterImage.src = "./Images/WATER DROP/water-splash.png"
 
     const dogImage = new Image()
-    dogImage.src = "./Images/DOGS/DOG OK.png"
+    dogImage.src = "./Images/DOGS/DOG-OK.png"
 
     const drawObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
@@ -203,19 +204,19 @@ window.onload = () => {
         obstacles2.forEach((obstacle) => {
 
             const cucumberImage = new Image()
-            cucumberImage.src = "/Images/CUCUMBER/pepino ok.png"
+            cucumberImage.src = "./Images/CUCUMBER/pepino-ok.png"
 
             const waterImage = new Image()
-            waterImage.src = "/Images/WATER DROP/water-splash.png"
+            waterImage.src = "./Images/WATER-DROP/water-splash.png"
 
             const dogImage = new Image()
-            dogImage.src = "/Images/DOGS/DOG OK.png"
+            dogImage.src = "./Images/DOGS/DOG-OK.png"
 
             const badObstaclesImages = [cucumberImage, waterImage, dogImage]
 
             const randomImages = (min, max) => {
-                return Math.floor(Math.random() * (max - min)) + min;
-            }
+                 return (Math.floor(Math.random() * (max - min)) + min)
+                } 
             
             ctx.drawImage(badObstaclesImages[randomImages(0, 3)], obstacle.x, obstacle.y, obstacle.width, 25)
         })
@@ -321,7 +322,6 @@ window.onload = () => {
             renderLifes()
             //lifePrint()
 
-            countDown()
             renderCountDown()
 
             createObstacle()
