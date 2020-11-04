@@ -48,8 +48,8 @@ window.onload = () => {
     const obstacles = []
     const obstacles2 = []
 
-    //Para "colisiones"
-    const catPosition = [catX, catY]
+    //Para countDown
+    let timeLeft = 20;
 
 
     //DOM MANIPULATION__________________________________________________________________________
@@ -221,9 +221,7 @@ window.onload = () => {
         })
     }
 
-
     //COMPROBAR COLISIÓN CON COOKIES
-
     const checkCookieCollision = () => {
         obstacles.forEach((obstacle, index) => {
             if (catX <= obstacle.x + obstacle.width &&
@@ -290,8 +288,24 @@ window.onload = () => {
         ctx.fillText("YOU WIN!", 250, 175)
     };
 
+    //FUNCIÓN CUENTA ATRAS DEL JUEGO
+ 
 
+        const countDown = ()=> {
+            setInterval(()=>{
+                if (timeLeft <= 0) {
+                    clearInterval(timeLeft = 0)
+                }
+                timeLeft -= 1
+                
+            }, 1000)
+        }
 
+        const renderCountDown = ()=>{
+            ctx.font = "20px sans-serif"
+            ctx.fillStyle = "white"
+            ctx.fillText(`TIME LEFT: ${timeLeft}`, 300, 30)
+        }
 
     //START GAME FUNCIÓN
     startGame = () => {
@@ -299,6 +313,8 @@ window.onload = () => {
             renderBackground()
             renderCat()
             renderLifes()
+            countDown()
+            renderCountDown()
 
             createObstacle()
             drawObstacles()
