@@ -78,7 +78,7 @@ window.onload = () => {
 
     const renderCat = () => {
         const cat = new Image()
-        cat.src = "/Images/CATS/tile009.png"
+        cat.src = "./Images/CATS/tile009.png"
         drawCat(cat)
     }
 
@@ -139,7 +139,7 @@ window.onload = () => {
 
 
     const cookieImage = new Image()
-    cookieImage.src = "/Images/FISH COOKIE/cookie.png"
+    cookieImage.src = "./Images/FISH COOKIE/cookie.png"
 
 
     const drawObstacles = () => {
@@ -167,13 +167,13 @@ window.onload = () => {
     }
 
     const cucumberImage = new Image()
-    cucumberImage.src = "/Images/CUCUMBER/pepino ok.png"
+    cucumberImage.src = "./Images/CUCUMBER/pepino ok.png"
 
     const waterImage = new Image()
-    waterImage.src = "/Images/WATER DROP/water-splash.png"
+    waterImage.src = "./Images/WATER DROP/water-splash.png"
 
     const dogImage = new Image()
-    dogImage.src = "/Images/DOGS/DOG OK.png"
+    dogImage.src = "./Images/DOGS/DOG OK.png"
 
     const drawObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
@@ -258,11 +258,23 @@ window.onload = () => {
         }
     };
 
-    const renderGameOverText = () => {
+    /*const renderGameOverText = () => {
         ctx.font = '50px sans-serif'
         ctx.textAlign = 'center'
         ctx.fillText('GAME OVER', 250, 175)
+    };*/
+
+    const renderGameOver = () => {
+        const gameOver = new Image()
+        gameOver.src = "./Images/GAMER OVER/GAME OVER 1.png"
+        drawGameOver(gameOver)
     };
+
+    const drawGameOver = (_gameOver)=>{
+        _gameOver.onload = ()=> {
+            ctx.drawImage(_gameOver, 100, 100, 300, 150)
+        }
+    }
 
     //COMPROBAR Y DIBUJAR VICTORIA
 
@@ -307,7 +319,7 @@ window.onload = () => {
             renderVictoryText()
             renderLifes()
         } else if (endGame) {
-            renderGameOverText()
+            renderGameOver()
         }
 
 
