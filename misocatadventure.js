@@ -72,7 +72,7 @@ window.onload = () => {
     //CREAR IMÁGENES
     const renderBackground = () => {
         const background = new Image()
-        background.src = "/Images/BACKGROUND/background1.png"
+        background.src = "./Images/BACKGROUND/background1.png"
         drawBackground(background)
     }
 
