@@ -133,6 +133,7 @@ window.onload = () => {
             cookies.push(newCookie)
         }
     }
+    
 
     const drawCookies = () => {
         cookies.forEach((cookie) => {
@@ -146,8 +147,6 @@ window.onload = () => {
         })
     }
 
-
-
     //START GAME FUNCIÓN
     startGame = () => {
         renderBackground()
@@ -157,7 +156,6 @@ window.onload = () => {
         drawCookies()
         updateCookies()
        
-
         requestAnimationFrame(startGame)
     }
 

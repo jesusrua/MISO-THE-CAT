@@ -36,9 +36,6 @@ window.onload = () => {
     //let catGravityY = 0;
     let catY = 240;
     let catX = 220;
-    //ctx.fillStyle = "green"
-
-    //Cookies
 
     //Otras
     let endGame = false;
@@ -47,25 +44,34 @@ window.onload = () => {
     let dateRightNow2 = Date.now()
     const obstacles = []
     const obstacles2 = []
+    let clickable = true;
 
     //Para countDown
     let timeLeft = 20;
-
 
     //DOM MANIPULATION__________________________________________________________________________
 
     //Botón Start Game
     document.getElementById("start-game").onclick = (event) => {
-        startGame()
+        if (clickable === true) {
+            document.getElementById("start-game").classList.add("disabled")
+            clickable = false;
+            endGame = false;
+            victory = false;
+            lifes = 7;
+            //timeLeft = 20;
+            obstacles.length = 0;
+            obstacles2.length = 0;
+            startGame()
+        }
     }
 
-    //Botón espacio
+    //Botón Arrow Up
     document.addEventListener("keydown", (event) => {
         if (event.code === "ArrowUp") {
             jump()
         }
     })
-
 
     //FUNCIONES_________________________________________________________________________________
 
@@ -98,10 +104,19 @@ window.onload = () => {
 
     //CREAR TEXTO VIDAS
 
+    //Para DOM. Deja de funcionar el juego si lo pongo dentro de la funcion START GAME.
+    //Probando de meterlo en la funcion de start boton tampoco funciona.
+    /*const lifeCounter = document.getElementById("lifes")
+    const lifePrint = () => {
+        lifeCounter.textContent = `LIFES: ${life}`
+    }*/
+
+
     const renderLifes = () => {
+
         ctx.font = '20px sans-serif'
         ctx.fillStyle = 'white'
-        ctx.fillText(`LIFES: ${lifes}`, 10, 30)
+        ctx.fillText(`LIFE: ${lifes}`, 15, 30)
     }
 
     //SALTO DEL GATO
@@ -121,12 +136,12 @@ window.onload = () => {
         }, 20)
     }
 
-    //CREACIÓN DE COOKIES
+    //CREACIÓN DE FISH COOKIES
 
     //¿Usar esto para que salgan a distinta distancia?
-    const getRandomTimeforCookies = () => {
+    /*const getRandomTimeforCookies = () => {
         return Math.floor(Math.random() * 5000) + 2000
-    }
+    }*/
 
     const createObstacle = () => {
 
@@ -137,10 +152,9 @@ window.onload = () => {
         }
     }
 
-
+    //Dibujar Fish Cookies
     const cookieImage = new Image()
     cookieImage.src = "./Images/FISH COOKIE/cookie.png"
-
 
     const drawObstacles = () => {
         obstacles.forEach((obstacle) => {
@@ -182,10 +196,10 @@ window.onload = () => {
 
     }
 
+    const badObstaclesImages = [cucumberImage, waterImage, dogImage]
 
-    /*const badObstaclesImages = [cucumberImage, waterImage, dogImage]
 
-   const drawObstacles2 = () => {
+    /*const drawObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
 
             const cucumberImage = new Image()
@@ -199,19 +213,11 @@ window.onload = () => {
 
             const badObstaclesImages = [cucumberImage, waterImage, dogImage]
 
-            const randomImages = (min, max)=> {
+            const randomImages = (min, max) => {
                 return Math.floor(Math.random() * (max - min)) + min;
             }
-
-            ctx.drawImage(badObstacles[randomImages(0, 3)], obstacle.x, obstacle.y, obstacle.width, 25)
-        })
-    }*/
-
-
-    //ESTO FUNCIONA
-    /*const drawObstacles2 = () => {
-        obstacles2.forEach((obstacle) => {
-            ctx.drawImage(cucumberImage, obstacle.x, obstacle.y, obstacle.width, 25)
+            
+            ctx.drawImage(badObstaclesImages[randomImages(0, 3)], obstacle.x, obstacle.y, obstacle.width, 25)
         })
     }*/
 
@@ -251,16 +257,10 @@ window.onload = () => {
     //COMPROBAR Y DIBUJAR FIN DEL JUEGO
 
     const checkEndGame = () => {
-        if (lifes <= 0 ) {
+        if (lifes <= 0) {
             return endGame = true
         }
     };
-
-    /*const renderGameOverText = () => {
-        ctx.font = '50px sans-serif'
-        ctx.textAlign = 'center'
-        ctx.fillText('GAME OVER', 250, 175)
-    };*/
 
     const renderGameOver = () => {
         const gameOver = new Image()
@@ -268,8 +268,8 @@ window.onload = () => {
         drawGameOver(gameOver)
     };
 
-    const drawGameOver = (_gameOver)=>{
-        _gameOver.onload = ()=> {
+    const drawGameOver = (_gameOver) => {
+        _gameOver.onload = () => {
             ctx.drawImage(_gameOver, 100, 100, 300, 150)
         }
     }
@@ -277,35 +277,41 @@ window.onload = () => {
     //COMPROBAR Y DIBUJAR VICTORIA
 
     const checkVictory = () => {
-        if (lifes >= 20) {
+        if (lifes >= 10) {
             return victory = true;
         }
     };
 
-    const renderVictoryText = () => {
-        ctx.font = "50px sans-serif"
-        ctx.textAlign = "center"
-        ctx.fillText("YOU WIN!", 250, 175)
+    const renderVictory = () => {
+        const victory = new Image()
+        victory.src = "./Images/VICTORY/YOU WIN.png"
+        drawVictory(victory)
     };
 
+    const drawVictory = (_victory) => {
+        _victory.onload = () => {
+            ctx.drawImage(_victory, 50, 100, 400, 150)
+        }
+    }
+
     //FUNCIÓN CUENTA ATRAS DEL JUEGO
- 
 
-        const countDown = ()=> {
-            setInterval(()=>{
-                if (timeLeft <= 0) {
-                    clearInterval(timeLeft = 0)
-                }
-                timeLeft -= 1
-                
-            }, 1000)
-        }
 
-        const renderCountDown = ()=>{
-            ctx.font = "20px sans-serif"
-            ctx.fillStyle = "white"
-            ctx.fillText(`TIME LEFT: ${timeLeft}`, 300, 30)
-        }
+    const countDown = () => {
+        setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timeLeft = 0)
+            }
+            timeLeft -= 1
+
+        }, 1000)
+    }
+
+    const renderCountDown = () => {
+        ctx.font = "20px sans-serif"
+        ctx.fillStyle = "white"
+        ctx.fillText(`TIME LEFT: ${timeLeft}`, 350, 30)
+    }
 
     //START GAME FUNCIÓN
     startGame = () => {
@@ -313,6 +319,8 @@ window.onload = () => {
             renderBackground()
             renderCat()
             renderLifes()
+            //lifePrint()
+
             countDown()
             renderCountDown()
 
@@ -330,12 +338,15 @@ window.onload = () => {
             checkVictory()
 
             requestAnimationFrame(startGame)
-
         } else if (victory) {
-            renderVictoryText()
+            renderVictory()
             renderLifes()
+            clickable = true;
+            document.getElementById("start-game").classList.remove("disabled")
         } else if (endGame) {
             renderGameOver()
+            clickable = true;
+            document.getElementById("start-game").classList.remove("disabled")
         }
 
 
