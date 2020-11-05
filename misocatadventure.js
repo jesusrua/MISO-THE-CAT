@@ -30,12 +30,11 @@ window.onload = () => {
     //VARIABLES_________________________________________________________________________________
 
     //Gato
-    let lifes = 7;
+    let lives = 7;
     let lifeUp = false;
     let catVelocityY = 5;
-    //let catGravityY = 0;
-    let catY = 240;
-    let catX = 220;
+    let catY = 242;
+    let catX = 225;
 
     //Otras
     let endGame = false;
@@ -47,7 +46,9 @@ window.onload = () => {
     let clickable = true;
 
     //Para countDown
-    let timeLeft = 20;
+    let timeLeft = 10;
+    let timeCounter = 1;
+    let countDownTime = 1000;
 
     //DOM MANIPULATION__________________________________________________________________________
 
@@ -58,8 +59,10 @@ window.onload = () => {
             clickable = false;
             endGame = false;
             victory = false;
-            lifes = 7;
-            //timeLeft = 20;
+            lives = 7;
+            timeLeft = 10;
+            timeCounter = 1;
+            countDownTime = 1000;
             obstacles.length = 0;
             obstacles2.length = 0;
             countDown()
@@ -71,6 +74,18 @@ window.onload = () => {
     document.addEventListener("keydown", (event) => {
         if (event.code === "ArrowUp") {
             jump()
+        }
+
+        if (event.code === "ArrowRight") {
+            if (!(catX === 495)) {
+                catX += 20
+            }
+        }
+
+        if (event.code === "ArrowLeft") {
+            if (!(catX === 5)) {
+                catX -= 20
+            }
         }
     })
 
@@ -85,7 +100,7 @@ window.onload = () => {
 
     const renderCat = () => {
         const cat = new Image()
-        cat.src = "./Images/CATS/tile009.png"
+        cat.src = "./Images/CATS/final-cat.png"
         drawCat(cat)
     }
 
@@ -99,67 +114,52 @@ window.onload = () => {
 
     const drawCat = (_cat) => {
         _cat.onload = () => {
-            ctx.drawImage(_cat, catX, catY, 50, 50)
+            ctx.drawImage(_cat, catX, catY, 30, 41)
         }
     }
 
-    //CREAR TEXTO VIDAS
-
-    //Para DOM. Deja de funcionar el juego si lo pongo dentro de la funcion START GAME.
-    //Probando de meterlo en la funcion de start boton tampoco funciona.
-    /*const lifeCounter = document.getElementById("lifes")
-    const lifePrint = () => {
-        lifeCounter.textContent = `LIFES: ${life}`
-    }*/
-
-
-    const renderLifes = () => {
+    const renderLives = () => {
 
         ctx.font = '20px sans-serif'
         ctx.fillStyle = 'white'
-        ctx.fillText(`LIFE: ${lifes}`, 15, 30)
+        ctx.fillText(`LIVES: ${lives}`, 15, 30)
     }
 
     //SALTO DEL GATO
 
     const jump = () => {
-        if (catY = 240) {let timerUp = setInterval(() => {
-            if (catY <= 149) {
-                clearInterval(timerUp)
-                let timerDown = setInterval(() => {
-                    if (catY >= 240) {
-                        clearInterval(timerDown)
-                    }
-                    catY += catVelocityY
-                }, 20)
-            }
-            catY -= catVelocityY
-        }, 20)} 
+        if (catY = 240) {
+            let timerUp = setInterval(() => {
+                if (catY <= 149) {
+                    clearInterval(timerUp)
+                    let timerDown = setInterval(() => {
+                        if (catY >= 240) {
+                            clearInterval(timerDown)
+                        }
+                        catY += catVelocityY
+                    }, 20)
+                }
+                catY -= catVelocityY
+            }, 20)
+        }
     }
-
-    //CREACIÓN DE FISH COOKIES
-
-    //¿Usar esto para que salgan a distinta distancia?
-    /*const getRandomTimeforCookies = () => {
-        return Math.floor(Math.random() * 5000) + 2000
-    }*/
 
     const createObstacle = () => {
 
         if (Date.now() - dateRightNow >= 1000) {
             dateRightNow = Date.now()
-            const newObstacle = new Obstacle(500, 124, 50)
+            const newObstacle = new Obstacle(500, 124, 40)
             obstacles.push(newObstacle)
         }
     }
 
     //Dibujar Fish Cookies
     const cookieImage = new Image()
-    cookieImage.src = "./Images/FISH COOKIE/cookie.png"
+    cookieImage.src = "./Images/FISH-COOKIE/cookieCut.png"
 
     const drawObstacles = () => {
         obstacles.forEach((obstacle) => {
-            ctx.drawImage(cookieImage, obstacle.x, obstacle.y, obstacle.width, 50)
+            ctx.drawImage(cookieImage, obstacle.x, obstacle.y, obstacle.width, 25)
         })
 
     }
@@ -185,10 +185,10 @@ window.onload = () => {
     cucumberImage.src = "./Images/CUCUMBER/pepino-ok.png"
 
     const waterImage = new Image()
-    waterImage.src = "./Images/WATER DROP/water-splash.png"
+    waterImage.src = "./Images/WATER-DROP/water-splash.png"
 
     const dogImage = new Image()
-    dogImage.src = "./Images/DOGS/DOG-OK.png"
+    dogImage.src = "./Images/DOGS/final-dog.png"
 
     const drawObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
@@ -210,7 +210,7 @@ window.onload = () => {
             waterImage.src = "./Images/WATER-DROP/water-splash.png"
 
             const dogImage = new Image()
-            dogImage.src = "./Images/DOGS/DOG-OK.png"
+            dogImage.src = "./Images/DOGS/final-dog.png"
 
             const badObstaclesImages = [cucumberImage, waterImage, dogImage]
 
@@ -232,10 +232,10 @@ window.onload = () => {
     const checkCookieCollision = () => {
         obstacles.forEach((obstacle, index) => {
             if (catX <= obstacle.x + obstacle.width &&
-                catX + 50 > obstacle.x &&
+                catX + 30 > obstacle.x &&
                 catY <= obstacle.y + 25 &&
-                50 + catY >= obstacle.y) {
-                lifes++
+                41 + catY >= obstacle.y) {
+                lives++
                 obstacles.splice(index, 1)
             }
         })
@@ -243,13 +243,25 @@ window.onload = () => {
 
     //COMPROBAR COLISIÓN CON OBSTACLE MALOS
 
-    const checkBadCollision = () => {
+    /*const checkBadCollision = () => {
         obstacles2.forEach((obstacle, index) => {
             if (catX <= obstacle.x + obstacle.width &&
                 catX + 50 > obstacle.x &&
                 catY <= obstacle.y + 25 &&
                 50 + catY >= obstacle.y) {
-                lifes--
+                lives--
+                obstacles2.splice(index, 1)
+            }
+        })
+    }*/
+
+    const checkBadCollision = () => {
+        obstacles2.forEach((obstacle, index) => {
+            if (catX <= obstacle.x + obstacle.width &&
+                catX + 30 > obstacle.x &&
+                catY <= obstacle.y + 25 &&
+                41 + catY >= obstacle.y) {
+                lives--
                 obstacles2.splice(index, 1)
             }
         })
@@ -258,14 +270,14 @@ window.onload = () => {
     //COMPROBAR Y DIBUJAR FIN DEL JUEGO
 
     const checkEndGame = () => {
-        if (lifes <= 0) {
+        if (lives <= 0) {
             return endGame = true
         }
     };
 
     const renderGameOver = () => {
         const gameOver = new Image()
-        gameOver.src = "./Images/GAMER OVER/GAME OVER 1.png"
+        gameOver.src = "./Images/GAME-OVER/gameOverOk.png"
         drawGameOver(gameOver)
     };
 
@@ -278,34 +290,43 @@ window.onload = () => {
     //COMPROBAR Y DIBUJAR VICTORIA
 
     const checkVictory = () => {
-        if (lifes >= 10) {
+        if (lives >= 10) {
             return victory = true;
         }
     };
 
     const renderVictory = () => {
         const victory = new Image()
-        victory.src = "./Images/VICTORY/YOU WIN.png"
+        victory.src = "./Images/VICTORY/youwinok.png"
         drawVictory(victory)
     };
 
     const drawVictory = (_victory) => {
         _victory.onload = () => {
-            ctx.drawImage(_victory, 50, 100, 400, 150)
+            ctx.drawImage(_victory, 100, 100, 300, 150)
         }
     }
 
     //FUNCIÓN CUENTA ATRAS DEL JUEGO
 
+    /*const countDown = () => {
+        setInterval(() => {
+            if (timeLeft === 0) {
+                endGame = true;
+            }
+            timeLeft = timeLeft - timeCounter
+        }, countDownTime)
+    }*/
 
     const countDown = () => {
         setInterval(() => {
             if (timeLeft <= 0) {
                 clearInterval(timeLeft = 0)
+                endGame = true;
             }
-            timeLeft -= 1
+            timeLeft = timeLeft - timeCounter
 
-        }, 1000)
+        }, countDownTime)
     }
 
     const renderCountDown = () => {
@@ -315,13 +336,12 @@ window.onload = () => {
     }
 
     //START GAME FUNCIÓN
+
     startGame = () => {
         if (!endGame && !victory) {
             renderBackground()
             renderCat()
-            renderLifes()
-            //lifePrint()
-
+            renderLives()
             renderCountDown()
 
             createObstacle()
@@ -340,11 +360,12 @@ window.onload = () => {
             requestAnimationFrame(startGame)
         } else if (victory) {
             renderVictory()
-            renderLifes()
+            renderLives()
             clickable = true;
             document.getElementById("start-game").classList.remove("disabled")
         } else if (endGame) {
             renderGameOver()
+            renderLives()
             clickable = true;
             document.getElementById("start-game").classList.remove("disabled")
         }

@@ -9,26 +9,19 @@ body {
 
 header {
   margin-bottom: 20px;
-  font-size: 26px;
+  font-size: 35px;
   color: white;
   font-weight: bolder;
-
-}
-
-.game-data {
-  margin-top: 20px;
-  margin-bottom: -20px;
-}
-
-.lifes {
-  font-size: 12px;
+  padding-top: 10px;
 }
 
 canvas {
     border: 1px solid white;
-    margin-top: 30px;
+    margin-top: 10px;
+    margin-bottom: 25px;
   }
 
-.btn.btn-primary.btn-lg {
-  margin-top: 25px;;
-}
+  .modal-body {
+    font-size: 10px;
+    text-align: left;
+  } 
