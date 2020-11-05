@@ -77,7 +77,7 @@ window.onload = () => {
             countDown()
             startGame()
         }
-    }
+    };
 
     //Botón Arrow Up
     document.addEventListener("keydown", (event) => {
@@ -85,10 +85,10 @@ window.onload = () => {
             jump()
         }
 
-       if (event.code === "ArrowRight") {
-           if (catX <= 485) {
-            slideRight()
-           }
+        if (event.code === "ArrowRight") {
+            if (catX <= 455) {
+                slideRight()
+            }
         }
 
         if (event.code === "ArrowLeft") {
@@ -96,7 +96,7 @@ window.onload = () => {
                 slideLeft()
             }
         }
-    })
+    });
 
     //FUNCIONES_________________________________________________________________________________
 
@@ -129,14 +129,6 @@ window.onload = () => {
 
     //CREAR TEXTO VIDAS
 
-    //Para DOM. Deja de funcionar el juego si lo pongo dentro de la funcion START GAME.
-    //Probando de meterlo en la funcion de start boton tampoco funciona.
-    /*const lifeCounter = document.getElementById("lives")
-    const lifePrint = () => {
-        lifeCounter.textContent = `LIVES: ${life}`
-    }*/
-
-
     const renderLives = () => {
 
         ctx.font = '20px sans-serif'
@@ -144,7 +136,7 @@ window.onload = () => {
         ctx.fillText(`LIVES: ${lives}`, 15, 30)
     }
 
-    //SALTO DEL GATO
+    //SALTO DEL GATO y FUNCIONES SLIDE IZQUIERDA Y DERECHA
 
     const jump = () => {
         if (isJumping) return
@@ -165,45 +157,38 @@ window.onload = () => {
         }, 20)
     }
 
-    const slideLeft = ()=>{
-        if(isGoingRight || catY>=240) {
+    const slideLeft = () => {
+        if (isGoingRight || catY >= 240) {
             clearInterval(rightTimer)
             isGoingRight = false
         }
         isGoingLeft = true
-        leftTimer = setInterval(()=>{
-            if ( catY >= 240 && isGoingLeft) {
+        leftTimer = setInterval(() => {
+            if (catY >= 240 && isGoingLeft) {
                 isGoingLeft = false
                 clearInterval(leftTimer)
-                catX-=8
+                catX -= 8
             }
-            catX-= catVelocityX * gravity
+            catX -= catVelocityX * gravity
         }, 20)
     }
 
-    const slideRight = ()=>{
-        if(isGoingLeft)  {
+    const slideRight = () => {
+        if (isGoingLeft) {
             clearInterval(leftTimer)
             isGoingLeft = false
         }
         isGoingRight = true
-        rightTimer = setInterval(()=>{
+        rightTimer = setInterval(() => {
             if (catY >= 240 && isGoingRight) {
                 isGoingRight = false
                 clearInterval(rightTimer)
                 catX += 8
-            }  
-            catX+= catVelocityX * gravity
+            }
+            catX += catVelocityX * gravity
             console.log("going left")
         }, 20)
     }
-
-    //CREACIÓN DE FISH COOKIES
-
-    //¿Usar esto para que salgan a distinta distancia?
-    /*const getRandomTimeforCookies = () => {
-        return Math.floor(Math.random() * 5000) + 2000
-    }*/
 
     const createObstacle = () => {
 
@@ -222,15 +207,14 @@ window.onload = () => {
         obstacles.forEach((obstacle) => {
             ctx.drawImage(cookieImage, obstacle.x, obstacle.y, obstacle.width, 25)
         })
-
-    }
+    };
 
     const updateObstacles = () => {
 
         obstacles.forEach((obstacle) => {
             obstacle.x -= 4
         })
-    }
+    };
 
     //CREACIÓN OBSTÁCULOS MALOS
 
@@ -258,31 +242,6 @@ window.onload = () => {
 
     }
 
-    const badObstaclesImages = [cucumberImage, waterImage, dogImage]
-
-
-    /*const drawObstacles2 = () => {
-        obstacles2.forEach((obstacle) => {
-
-            const cucumberImage = new Image()
-            cucumberImage.src = "./Images/CUCUMBER/pepino-ok.png"
-
-            const waterImage = new Image()
-            waterImage.src = "./Images/WATER-DROP/water-splash.png"
-
-            const dogImage = new Image()
-            dogImage.src = "./Images/DOGS/final-dog.png"
-
-            const badObstaclesImages = [cucumberImage, waterImage, dogImage]
-
-            const randomImages = (min, max) => {
-                 return (Math.floor(Math.random() * (max - min)) + min)
-                } 
-            
-            ctx.drawImage(badObstaclesImages[randomImages(0, 3)], obstacle.x, obstacle.y, obstacle.width, 25)
-        })
-    }*/
-
     const updateObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
             obstacle.x -= 2
@@ -304,17 +263,6 @@ window.onload = () => {
 
     //COMPROBAR COLISIÓN CON OBSTACLE MALOS
 
-    /*const checkBadCollision = () => {
-        obstacles2.forEach((obstacle, index) => {
-            if (catX <= obstacle.x + obstacle.width &&
-                catX + 50 > obstacle.x &&
-                catY <= obstacle.y + 25 &&
-                50 + catY >= obstacle.y) {
-                lives--
-                obstacles2.splice(index, 1)
-            }
-        })
-    }*/
 
     const checkBadCollision = () => {
         obstacles2.forEach((obstacle, index) => {
@@ -351,7 +299,7 @@ window.onload = () => {
     //COMPROBAR Y DIBUJAR VICTORIA
 
     const checkVictory = () => {
-        if (lives >= 10) {
+        if (lives >= 50) {
             return victory = true;
         }
     };
@@ -369,15 +317,6 @@ window.onload = () => {
     }
 
     //FUNCIÓN CUENTA ATRAS DEL JUEGO
-
-    /*const countDown = () => {
-        setInterval(() => {
-            if (timeLeft === 0) {
-                endGame = true;
-            }
-            timeLeft = timeLeft - timeCounter
-        }, countDownTime)
-    }*/
 
     const countDown = () => {
         setInterval(() => {
@@ -398,27 +337,22 @@ window.onload = () => {
 
     //START GAME FUNCIÓN
 
-    ///init()
     startGame = () => {
         if (!endGame && !victory) {
             renderBackground()
             renderCat()
             renderLives()
             renderCountDown()
-
             createObstacle()
             drawObstacles()
             updateObstacles()
-
             createObstacle2()
             drawObstacles2()
             updateObstacles2()
-
             checkCookieCollision()
             checkBadCollision()
             checkEndGame()
             checkVictory()
-
             requestAnimationFrame(startGame)
         } else if (victory) {
             renderVictory()
@@ -431,8 +365,5 @@ window.onload = () => {
             clickable = true;
             document.getElementById("start-game").classList.remove("disabled")
         }
-
-
     }
-
 };
