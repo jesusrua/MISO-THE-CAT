@@ -29,6 +29,14 @@ window.onload = () => {
 
     //VARIABLES_________________________________________________________________________________
 
+    //Música
+    let backgroundAudio = new Audio("./sounds/POL-follow-me-short.wav")
+    backgroundAudio.loop = true;
+    backgroundAudio.volume = .2;
+
+
+
+
     //Gato
     let lives = 7;
     let lifeUp = false;
@@ -79,7 +87,7 @@ window.onload = () => {
         }
     };
 
-    //Botón Arrow Up
+    //Botón Arrow Up, Arrow Right & Arrow Left
     document.addEventListener("keydown", (event) => {
         if (event.code === "ArrowUp") {
             jump()
@@ -343,6 +351,7 @@ window.onload = () => {
             renderCat()
             renderLives()
             renderCountDown()
+            backgroundAudio.play()
             createObstacle()
             drawObstacles()
             updateObstacles()
@@ -357,11 +366,13 @@ window.onload = () => {
         } else if (victory) {
             renderVictory()
             renderLives()
+            backgroundAudio.pause()
             clickable = true;
             document.getElementById("start-game").classList.remove("disabled")
         } else if (endGame) {
             renderGameOver()
             renderLives()
+            backgroundAudio.pause()
             clickable = true;
             document.getElementById("start-game").classList.remove("disabled")
         }

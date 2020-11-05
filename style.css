@@ -25,3 +25,7 @@ canvas {
     font-size: 10px;
     text-align: left;
   } 
+
+  .btn.btn-primary {
+    font-size: 12px;
+  }
