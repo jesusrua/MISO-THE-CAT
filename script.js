@@ -29,12 +29,24 @@ window.onload = () => {
 
     //VARIABLES_________________________________________________________________________________
 
+    //Música
+    let backgroundAudio = new Audio("./sounds/POL-follow-me-short.wav")
+    backgroundAudio.loop = true;
+    backgroundAudio.volume = .2;
+
     //Gato
     let lives = 7;
     let lifeUp = false;
-    let catVelocityY = 5;
+    let catVelocityY = 6;
+    let catVelocityX = 6;
     let catY = 242;
-    let catX = 225;
+    let catX = 100;
+    let gravity = 0.9;
+    let isJumping = false;
+    let isGoingLeft = false;
+    let isGoingRight = false;
+    let rightTimer
+    let leftTimer
 
     //Otras
     let endGame = false;
@@ -44,9 +56,10 @@ window.onload = () => {
     const obstacles = []
     const obstacles2 = []
     let clickable = true;
+    let audioOff = false
 
     //Para countDown
-    let timeLeft = 10;
+    let timeLeft = 60;
     let timeCounter = 1;
     let countDownTime = 1000;
 
@@ -60,34 +73,62 @@ window.onload = () => {
             endGame = false;
             victory = false;
             lives = 7;
-            timeLeft = 10;
+            timeLeft = 60;
             timeCounter = 1;
             countDownTime = 1000;
             obstacles.length = 0;
             obstacles2.length = 0;
+            catX = 100;
+            clearInterval(countDown)
+            backgroundAudio.play()
             countDown()
             startGame()
         }
-    }
+    };
 
-    //Botón Arrow Up
+    //Botón Arrow Up, Arrow Right & Arrow Left
     document.addEventListener("keydown", (event) => {
         if (event.code === "ArrowUp") {
             jump()
         }
 
         if (event.code === "ArrowRight") {
-            if (!(catX === 495)) {
-                catX += 20
+            if (catX <= 455) {
+                slideRight()
             }
         }
 
         if (event.code === "ArrowLeft") {
-            if (!(catX === 5)) {
-                catX -= 20
+            if (catX >= 15) {
+                slideLeft()
             }
         }
+    });
+
+    //Botón música
+
+    const soundButtonOn = document.getElementById("sound-button-on")
+
+    const soundOff = ()=>{
+       backgroundAudio.pause()
+    }
+
+    const soundOn = ()=>{
+        backgroundAudio.play()
+    }
+
+    soundButtonOn.addEventListener("click", ()=>{
+        if (audioOff === false) {
+            soundOff()
+            audioOff = true
+            soundButtonOn.innerHTML = "SOUND ON"
+        } else {
+            soundOn()
+            audioOff = false
+            soundButtonOn.innerHTML = "SOUND OFF"
+        }
     })
+   
 
     //FUNCIONES_________________________________________________________________________________
 
@@ -118,6 +159,8 @@ window.onload = () => {
         }
     }
 
+    //CREAR TEXTO VIDAS
+
     const renderLives = () => {
 
         ctx.font = '20px sans-serif'
@@ -125,23 +168,58 @@ window.onload = () => {
         ctx.fillText(`LIVES: ${lives}`, 15, 30)
     }
 
-    //SALTO DEL GATO
+    //SALTO DEL GATO y FUNCIONES SLIDE IZQUIERDA Y DERECHA
 
     const jump = () => {
-        if (catY = 240) {
-            let timerUp = setInterval(() => {
-                if (catY <= 149) {
-                    clearInterval(timerUp)
-                    let timerDown = setInterval(() => {
-                        if (catY >= 240) {
-                            clearInterval(timerDown)
-                        }
-                        catY += catVelocityY
-                    }, 20)
-                }
-                catY -= catVelocityY
-            }, 20)
+        if (isJumping) return
+        let timerUp = setInterval(() => {
+            if (catY <= 149) {
+                clearInterval(timerUp)
+                let timerDown = setInterval(() => {
+                    if (catY >= 240) {
+                        clearInterval(timerDown)
+                        isJumping = false
+                    }
+                    catY += catVelocityY
+                }, 20)
+            }
+            isJumping = true
+            catY -= catVelocityY
+            catY = catY * gravity
+        }, 20)
+    }
+
+    const slideLeft = () => {
+        if (isGoingRight || catY >= 240) {
+            clearInterval(rightTimer)
+            isGoingRight = false
         }
+        isGoingLeft = true
+        leftTimer = setInterval(() => {
+            if (catY >= 240 && isGoingLeft) {
+                isGoingLeft = false
+                clearInterval(leftTimer)
+                catX -= 8
+            }
+            catX -= catVelocityX * gravity
+        }, 20)
+    }
+
+    const slideRight = () => {
+        if (isGoingLeft) {
+            clearInterval(leftTimer)
+            isGoingLeft = false
+        }
+        isGoingRight = true
+        rightTimer = setInterval(() => {
+            if (catY >= 240 && isGoingRight) {
+                isGoingRight = false
+                clearInterval(rightTimer)
+                catX += 8
+            }
+            catX += catVelocityX * gravity
+            console.log("going left")
+        }, 20)
     }
 
     const createObstacle = () => {
@@ -161,20 +239,19 @@ window.onload = () => {
         obstacles.forEach((obstacle) => {
             ctx.drawImage(cookieImage, obstacle.x, obstacle.y, obstacle.width, 25)
         })
-
-    }
+    };
 
     const updateObstacles = () => {
 
         obstacles.forEach((obstacle) => {
             obstacle.x -= 4
         })
-    }
+    };
 
     //CREACIÓN OBSTÁCULOS MALOS
 
     const createObstacle2 = () => {
-        if (Date.now() - dateRightNow2 >= 1300) {
+        if (Date.now() - dateRightNow2 >= 2500) {
             dateRightNow2 = Date.now()
             const newObstacle2 = new Obstacle2(500, 255, 35)
             obstacles2.push(newObstacle2)
@@ -197,34 +274,9 @@ window.onload = () => {
 
     }
 
-    const badObstaclesImages = [cucumberImage, waterImage, dogImage]
-
-
-    /*const drawObstacles2 = () => {
-        obstacles2.forEach((obstacle) => {
-
-            const cucumberImage = new Image()
-            cucumberImage.src = "./Images/CUCUMBER/pepino-ok.png"
-
-            const waterImage = new Image()
-            waterImage.src = "./Images/WATER-DROP/water-splash.png"
-
-            const dogImage = new Image()
-            dogImage.src = "./Images/DOGS/final-dog.png"
-
-            const badObstaclesImages = [cucumberImage, waterImage, dogImage]
-
-            const randomImages = (min, max) => {
-                 return (Math.floor(Math.random() * (max - min)) + min)
-                } 
-            
-            ctx.drawImage(badObstaclesImages[randomImages(0, 3)], obstacle.x, obstacle.y, obstacle.width, 25)
-        })
-    }*/
-
     const updateObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
-            obstacle.x -= 4
+            obstacle.x -= 2
         })
     }
 
@@ -243,17 +295,6 @@ window.onload = () => {
 
     //COMPROBAR COLISIÓN CON OBSTACLE MALOS
 
-    /*const checkBadCollision = () => {
-        obstacles2.forEach((obstacle, index) => {
-            if (catX <= obstacle.x + obstacle.width &&
-                catX + 50 > obstacle.x &&
-                catY <= obstacle.y + 25 &&
-                50 + catY >= obstacle.y) {
-                lives--
-                obstacles2.splice(index, 1)
-            }
-        })
-    }*/
 
     const checkBadCollision = () => {
         obstacles2.forEach((obstacle, index) => {
@@ -290,7 +331,7 @@ window.onload = () => {
     //COMPROBAR Y DIBUJAR VICTORIA
 
     const checkVictory = () => {
-        if (lives >= 10) {
+        if (lives >= 50) {
             return victory = true;
         }
     };
@@ -308,15 +349,6 @@ window.onload = () => {
     }
 
     //FUNCIÓN CUENTA ATRAS DEL JUEGO
-
-    /*const countDown = () => {
-        setInterval(() => {
-            if (timeLeft === 0) {
-                endGame = true;
-            }
-            timeLeft = timeLeft - timeCounter
-        }, countDownTime)
-    }*/
 
     const countDown = () => {
         setInterval(() => {
@@ -343,34 +375,32 @@ window.onload = () => {
             renderCat()
             renderLives()
             renderCountDown()
-
+            
             createObstacle()
             drawObstacles()
             updateObstacles()
-
             createObstacle2()
             drawObstacles2()
             updateObstacles2()
-
             checkCookieCollision()
             checkBadCollision()
             checkEndGame()
             checkVictory()
-
             requestAnimationFrame(startGame)
         } else if (victory) {
             renderVictory()
             renderLives()
+            backgroundAudio.pause()
+            backgroundAudio.currentTime = 0
             clickable = true;
             document.getElementById("start-game").classList.remove("disabled")
         } else if (endGame) {
             renderGameOver()
             renderLives()
+            backgroundAudio.pause()
+            backgroundAudio.currentTime = 0
             clickable = true;
             document.getElementById("start-game").classList.remove("disabled")
         }
-
-
     }
-
 };
