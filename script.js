@@ -190,6 +190,7 @@ window.onload = () => {
     }
 
     const slideLeft = () => {
+        if(isGoingLeft) return
         if (isGoingRight || catY >= 240) {
             clearInterval(rightTimer)
             isGoingRight = false
@@ -199,13 +200,14 @@ window.onload = () => {
             if (catY >= 240 && isGoingLeft) {
                 isGoingLeft = false
                 clearInterval(leftTimer)
-                catX -= 8
+                catX -= 15
             }
             catX -= catVelocityX * gravity
         }, 20)
     }
 
     const slideRight = () => {
+        if (isGoingRight) return
         if (isGoingLeft) {
             clearInterval(leftTimer)
             isGoingLeft = false
@@ -215,10 +217,9 @@ window.onload = () => {
             if (catY >= 240 && isGoingRight) {
                 isGoingRight = false
                 clearInterval(rightTimer)
-                catX += 8
+                catX += 15
             }
             catX += catVelocityX * gravity
-            console.log("going left")
         }, 20)
     }
 
@@ -258,14 +259,9 @@ window.onload = () => {
         }
     }
 
-    const cucumberImage = new Image()
-    cucumberImage.src = "./Images/CUCUMBER/pepino-ok.png"
 
     const waterImage = new Image()
     waterImage.src = "./Images/WATER-DROP/water-splash.png"
-
-    const dogImage = new Image()
-    dogImage.src = "./Images/DOGS/final-dog.png"
 
     const drawObstacles2 = () => {
         obstacles2.forEach((obstacle) => {
